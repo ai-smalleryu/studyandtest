@@ -1,0 +1,1015 @@
+oracle数据库
+前言     oracle sql
+第一章   Selecting Rows
+第二章   Sorting & Limiting Selected Rows
+第三章   Single Row Functions
+第四章   Displaying Data from Multiple Tables
+第五章   Group Function 
+第六章   Subqueries
+第七章   Specifying Variables at Runtime
+第八章   Overview of Data Modeling and Database Design
+第九章   Creating Tables
+第十章   Oracle Data Dictionary
+第十一章 Manipulating Data(DML)
+第十二章 Altering Tables and Constraints
+第十三章 Creating Sequences
+第十四章 Creating View
+第十五章 Creating Indexes
+第十六章 Controlling User Access
+
+
+前言:
+	1.一个认知
+		认知什么是oracle？
+			oracle：商业运用第一的关系型数据库
+			实质：关系型数据库
+		了解oracle数据库发展历史(文档)
+	2.二个概念
+		数据库：数据存储的仓库
+		关系型数据库：数据库中保存的对象之间可以存在一定的关联关系，并非完全独立。主要反映到以后学习的主外键.
+		了解数据库发展历史(文档)
+	3.三个名词
+		sql:结构化的查询语句，操作oracle数据库的语言
+		sqlplus:oracle软件自带的可以输入sql，且将sql执行结果显示的终端
+		pl/sql:程序化的sql语句，在sql语句的基础上加入一定的逻辑操作，如if for...,使之成为一个sql块，完成一定的功能
+	4.四种对象
+		table：表格，由行和列组成，列又称字段，每一行内容为表格的一条完整的数据。
+		view:  视图，一张表或者多张表的部分或者完整的映射，好比表格照镜子，镜子里面的虚像就是view
+		除去常见的table和view两种对象以外，oracle数据库还支持如下四种对象
+		sequence：序列
+		index：索引，提高数据的访问效率
+		synonym：同义，方便对象的操作
+		program unit：程序单元，pl/sql操作的对象
+	5.五种分类
+		sql的五大分类:
+		Data retrieval：数据查询
+		select
+		DML：数据操纵语言（行级操作语言）：操作的是表格当中一条一条的数据
+		insert update delete
+		DDL：数据定义语言（表级操作语言）：操作的内容为表格（对象）
+		create alter drop truncate rename
+		transaction control：事务控制	
+		commit rollback savepoint
+		DCL：数据控制语言
+		grant revoke
+	
+		
+	delete，truncate区别：
+		delete：  删除表中的一条或者多条记录，该操作需要提交事务
+		truncate：清空表格,该操作不需要提交事务
+
+
+
+准备:
+	1.安装oracle数据库
+		1.1 最好默认按照到C盘
+		1.2 安装过程中有一步让输入一个密码,建议使用oracle作为密码,方便记忆
+		1.3 安装完成之后,打开系统服务,查看服务是否已经正常启动,具体情况参照文档:oracle系统服务.txt
+		1.4 打开cmd,输入sqlplus,然后回车查看是否能执行该命令
+		1.5 如果不能执行,则需要把安装目录里面的BIN里面配置到系统环境变了path中,然后重新打开一个cmd窗口即可
+
+		oracle的卸载具体参照文档
+
+	2.登录oracle自带的管理系统,新建一个属于自己的账号.参照文档:oracle系统服务.txt
+
+	3.用户创建好之后,使用sqlplus命令登录到oracle数据库中,然后把之后要使用到的表及其数据导入到数据库中.参照文档:导入数据.txt
+	
+	4.了解导入的三张表以及相互关系
+		s_emp		员工表
+		s_dept		部门表
+		s_region	地区表
+
+	5.之后登录或者操作数据库,就可以使用这个新创建的用户了
+
+
+====================================================================
+
+第一章：select语句，数据查询操作
+1.使用select语句查询某张表的所有数据内容
+	语法：
+	select [distinct] *{col_name1,col_name2,..}
+	from tb_name;
+	注意：语法中出现的中括号[]，表示该部分可有可无
+	*：表示所有列，仅仅作为测试和学习使用，在企业用语中不出现，因为效率低下且可读性差
+	col_name1：列名，将需要查阅的数据字段列举出来，可以查看多列值，列名之间用,进行分割即可
+	s_emp ：员工信息表
+	s_dept：员工部门表
+需求：查看s_dept表中的所有记录
+	select *
+	from s_dept;
+
+	select id,name,region_id
+	from s_dept;
+练习：查看s_dept表中的所有记录的id和name
+	select id,name
+	from s_dept;
+
+
+练习：查看所有员工的id，名字(last_name)和薪资(salary)
+	select id,last_name,salary
+	from s_emp;
+
+2.select语句可以对指定的列的所有值进行算术运算。
+	语法：
+	select col_name 运算符 数字
+	from tb_name;
+需求：查看每个员工的员工id，名字和年薪。
+	select id,last_name,salary*12
+	from s_emp;
+注意：select语句永远不对原始数据进行修改。
+练习：查看每个员工的员工id，名字和月薪涨100以后的年薪
+	select id,last_name,(salary+100)*12
+	from s_emp;
+3.给查询的列起别名
+	语法：
+	select old_column [as] new_column_name
+	from tb_name;
+需求：查看员工的员工id，名字和年薪,年薪列名为annual
+	select id,last_name,salary*12 as annual
+	from s_emp;
+
+4.使用||可以使得多列的值或者列和特殊的字符串合并到一个列进行显示
+	语法：
+	select col_name||'spe_char'||col_name
+	from tb_name
+	'spe_char':如果一个列的值要跟特殊的字符串连接显示，使用该语法。
+需求：查看员工的员工id，全名
+	select id,first_name||last_name
+	from s_emp;
+练习：查看员工的员工id，全名和职位名称，全名和职位名称合并成一列显示，且格式为：姓 名，职位名称
+	select id,first_name||' '||last_name||','||title as name
+	from s_emp;
+
+5.对null值得替换运算
+	nvl()函数
+	语法：
+	select nvl(col_name,change_value)
+	from tb_name;
+需求：查看所有员工的员工id，名字和提成，如果提成为空，显示成0
+	select id,last_name,nvl(commission_pct,0) commission_pct
+	from s_emp;
+6.使用distinct关键词，可以将显示中重复的记录只显示一条
+	语法：
+	select distinct col_name,col_name...
+	from tb_name;
+
+	注意1：distinct关键词只能放在select关键词后面
+	如：select id,distinct title
+	    from s_emp;
+	该语句语法错!!!!!
+	注意2：如果distinct关键词后面如果出现多列，表示多列联合去重，即多列的值都相同的时候才会认为是重复的记录。
+	test表：
+	id	id2
+	1	2
+	1	3
+	2	4
+	3	4
+	3	4
+	select distinct id,id2
+	from test;
+	显示结果为：
+	id	id2
+	1	2
+	1	3
+	2	4
+	3	4
+需求：查看所有员工的职位名称和部门id，同职位同部门的只显示一次
+	select distinct title,dept_id
+	from s_emp;
+
+7.sqlplus命令
+   sqlplus 登录之后,可以使用buff(缓存)来存储/执行/修改要执行的sql语句 
+   这里的buff的特点:
+      1.buff中只能存储一条sql语句(但是这条sql语句可能有很多行)
+      2.每次放入新的sql语句,会把之前的覆盖掉
+      3.每次执行sql语句,都会把这个sql语句放到buff里面
+
+	l   查看缓存中的sql语句
+	a   在[定位]的那一行后面追加新的内容
+	i   在[定位]的那一行下面插入新的一行
+	c   替换[定位]的那一行中的某些字符串 
+		c/老的字符串/新的字符串
+	del 删除[定位]的那一行内容
+	n   后面加内容可以重写这一行
+	!   后面接终端命令 !clear:清屏 windows中使用$符号 例如:$cls
+	/   执行缓存sql命令
+
+	clear buffer:清空当前缓存的命令
+
+		
+	save  test.sql  buff中的sql语句保存在test.sql文件中
+	get   test.sql  把test.sql中的内容在加载到buff中,但是没有运行
+	start test.sql  把test.sql中的内容在加载到buff中并且执行
+	@test.sql       把test.sql中的内容在加载到buff中并且执行
+	edit file_name  使用系统默认编辑器去编辑文件
+
+
+
+	spool file_name 将接下来的sql语句以及sql的运行结果保存到文件中
+		sql1
+		result1
+		sql2
+		result2
+		...
+	spool off  关闭spool功能
+	exit：退出
+	
+8.select id,last_name,first_name, salary, dept_id
+  from s_emp
+  Where rownum <=10;
+
+  结果不好看，通过column使我们的显示界面好看。
+
+	COLUMN last_name FORMAT a15;
+	可以简写为:
+	col last_name for a15;
+	COLUMN first_name FORMAT a15;
+
+	Column 没有改变数据表里数据，它只是改变显示。Column不是SQL命令,而是sqlplus命令。除了刚才这个作用之外，我们下面来看看它还有什么作用。
+
+	COLUMN last_name HEADING 'Employee|Name' FORMAT A15
+	. 给last_name取别名为Employee|Name , 竖杠代表换行。
+	. A15表示十五个字节长，一短横杠就是一个字节长
+
+	COLUMN salary JUSTIFY LEFT FORMAT $99,999.00
+	. salary JUSTIFY LEFT : 仅仅改变列名显示为左齐
+	. FORMAT $99,999.00: 控制显示格式为前面加 $ 符, “，”为分隔符, 0或9代表数字(通配符)，0表示替换对齐数值,位数不足会补足,可以混合使用。
+
+	COLUMN start_date FORMAT A8 NULL 'Not hired'
+	. 如果start_date值为空的话，显示为’Not hired’; 
+	. Format后不能直接跟null, 要先a8或a10;
+	. NULL 'Not hired'和nvl类似
+
+	column 显示所有对列格式的设置情况
+	column last_name 显示对last_name列显示设置的情况
+	column last_name clear 删除对last_name列格式设置的情况
+	Clear column 清除所有column的格式设置
+	
+	Column columName
+	可以显示该列的格式设置，这里的列并不特定于某个表.
+
+	注意:
+	1234   column 99.99  -- > ###### //出错的时候不能显示,只是显示####
+
+
+
+
+
+第二章：排序和限制查询
+	1.排序:所谓排序，就是根据某个字段的值按照升序或者降序的情况将记录查询出来
+		语法：
+		select col_name,...
+		from tb_name
+		order by col_name [asc|desc],...
+	注意：1.排序使用order by字句，该子句只对查询记录显示调整，并不改变查询结果，所以执行权最低，即最后执行。
+	2.排序关键词：
+		asc：升序（默认，默认的意思是不加关键词的时候默认为生序排序）
+		desc：降序
+	3.如果有多个列排序，后面的列排序的前提是前面的列排好序以后有重复（相同）的值。
+
+	例子：
+	id	id2
+	1	2
+	2	3
+	3	4
+	4	1
+	4	2
+
+	语句：
+	select id,id2
+	from test
+	order by id,id2 desc;
+	
+	结果：
+	id	id2
+	1	2
+	2	3
+	3	4
+	4	2
+	4	1
+	注意：先排第一列，如果第一列有重复的值再排第二列，以此类推
+需求：查看员工的id，名字和薪资，按照薪资的降序排序显示。
+	
+	4.order by 后面还可以跟数字,表示使用select后面的第几个列进行排序
+	例如:
+	//使用last_name列进行排序
+	select last_name,salary
+	from s_emp
+	order by 1;
+	
+	//使用salary列进行排序
+	select last_name,salary
+	from s_emp
+	order by 2;
+
+2.限制查询，即指定查询条件进行查询
+	语法：
+	select col_name,...
+	from tb_name
+	where col_name 比较操作表达式
+	逻辑操作符
+	      col_name 比较操作表达式
+	...
+	注意：
+	1.限制查询条件，使用where子句
+	2.条件可以多个，使用逻辑操作符和()进行条件的逻辑整合
+	3.where子句的优先级别最高
+	4.比较操作表达式由操作符和值组成
+		常见的操作：
+		1》逻辑比较操作符
+		=  >  <  >=  <=
+		2》不等于:三个都表示不等于的意思(经常用的是!=)
+		!=   <>   ^=
+
+需求：查看员工工资小于1000的员工id和名字
+	select id,last_name,salary
+	from s_emp
+	where salary < 1000;
+
+		3》sql比较操作符SQL comparison operators
+			  BETWEEN ... AND...
+			IN(list)
+			LIKE
+			IS NULL
+
+		between and：在什么范围之内 [x,y]
+需求：查看员工工资在700 到 1500之间的员工id，和名字
+	select id,last_name,salary
+	from s_emp
+	where salary between 700 and 1500;
+	
+	也可以在日期列上使用between and操作,但是要看当前session会话的语言环境来决定使用中文格式的日期还是英文格式的日期
+	alter session set nls_language='simplified chinese';
+	如果是中文的语言环境:
+	查询在90年3月8号到91年2月9号之间入职的员工信息
+	select id,last_name,start_date
+	from s_emp
+	where start_date between '08-3月-90' and '09-2月-91';
+	
+
+	alter session set nls_language=english;
+	如果是英文的语言环境:
+	查询在90年3月8号到91年2月9号之间入职的员工信息
+	select id,last_name,start_date
+	from s_emp
+	where start_date between '08-MAR-90' and '09-FEB-91';
+
+
+		in(list):在一个列表中
+需求：查看员工号1,3,5,7,9员工的工资
+	select id,last_name,salary
+	from s_emp
+	where id in (1,3,5,7,9);
+
+需求：查看是在'08-3月-90'或者'09-2月-91'入职的员工信息
+	select id,last_name,start_date
+	from s_emp
+	where start_date in ('08-3月-90','09-2月-91');
+
+需求：查看名字为Ngao或者Smith的员工信息	
+	select id,last_name,salary
+	from s_emp
+	where last_name in ('Ngao','Smith');
+
+
+		like:模糊查询，即值不是精确的值的时候使用
+		通配符，即可以代替任何内容的符号
+		% ：通配0到多个字符
+		_ : 当且仅当通配一个字符
+
+		转义字符：
+		默认为\,可以指定 指定的时候用escape 符号指明即可,转义字符只能转义后面的一个字符
+需求：查看员工名字以C字母开头的员工的id，工资。
+	select id,last_name,salary
+	from s_emp
+	where last_name like 'C%';
+练习：查看员工名字长度不小于5，且第四个字母为n的员工id和工资
+ 	select id,last_name,salary
+	from s_emp
+	where last_name like '___n_%';
+需求：查看员工名字中包换一个_的员工id和工资
+	注意:_是一个特殊字符,所以要转义
+	select id,last_name,salary
+	from s_emp
+	where last_name like '%\_%' escape '\';
+
+
+	   is null：对null值操作特定义的操作符，不能使用=
+需求：查看员工提成为空的员工的id和名字
+	select id,last_name,commission_pct
+	from s_emp
+	where commission_pct is null;
+
+	4》逻辑操作符
+	当条件有多个的时候使用
+		and：且逻辑
+		or： 或逻辑
+		注意：and逻辑比or逻辑要高
+		not：非逻辑
+		  NOT BETWEEN
+		NOT IN
+		NOT LIKE
+		IS NOT NULL
+
+需求：查看员工部门id为41且职位名称为Stock Clerk（存库管理员）的员工id和名字
+	select id,last_name,dept_id,title
+	from s_emp
+	where dept_id = 41
+	and
+	title = 'Stock Clerk';
+练习：查看员工部门为41 或者 44号部门 且工资大于1000的员工id和名字
+	select id,last_name,dept_id,salary
+	from s_emp
+	where salary > 1000
+	and
+    (
+	dept_id = 41
+    or
+    dept_id = 44
+	);
+    查看员工部门为41且工资大于1000 或者 44号部门的员工id和名字
+	select id,last_name,dept_id,salary
+	from s_emp
+	where salary > 1000
+	and
+	dept_id = 41
+	or
+	dept_id = 44;
+
+
+需求：查看员工提成不为空的员工的id和名字
+	select id,last_name,commission_pct
+	from s_emp
+	where commission_pct is not null;
+
+需求：查看员工名字不是以C字母开头的员工的id，工资。
+	select id,last_name,salary
+	from s_emp
+	where last_name not like 'C%';
+
+
+
+
+第三章：单值函数
+	函数分为:
+	  1.单值函数
+		  1.字符函数
+		  2.日期函数
+		  3.转换函数
+		  4.数字函数
+	  2.分组函数(后面的章节再做学习)
+	
+
+	哑表dual
+	  dual是一个虚拟表，用来构成select的语法规则，oracle保证dual里面永远只有一条记录。
+	  例如:
+	  显示1+1的结果,可以看出,dual很多时候是为了构成select的标准语法
+	  select 1+1 from dual;
+
+    
+	字符函数
+lower	  LOWER		Converts to lowercase
+upper	  UPPER		Converts to uppercase
+initcap	  INITCAP	Converts to initial capitalization
+concat	  CONCAT	Concatenates values
+substr	  SUBSTR	Returns substring
+	  LENGTH	Returns number of characters
+	  NVL		Converts a null value	
+
+	  lower 把字符转为小写
+		  例如:把'HELLO'转换为小写
+		  select lower('HELLO')
+		  from dual;
+		  
+		  例如:把s_emp表中的last_name列的值转换为小写
+		  select lower(last_name)
+		  from s_emp;
+		
+	  upper 把字符转换为大写
+		  例如:把'world'转换为大写
+		  select upper('world')
+		  from dual;
+
+		  例如:把s_emp表中的last_name列的值转换为大写
+		  select upper(last_name)
+		  from s_emp;
+          
+		  
+		  例如:查询s_emp表中名字为Ngao的人信息
+		  这样是查不到:
+		  select last_name,salary,dept_id
+		  from s_emp
+		  where last_name='NGAO';
+	      这样就可以查询到了:
+		  select last_name,salary,dept_id
+		  from s_emp
+		  where upper(last_name)='NGAO';
+
+	  initcap 把字符串首字母大写
+		  例如:把'hELLO'转换为首字母大写,其余字母小写
+		  select initcap('hELLO')
+		  from dual;
+
+	  
+	  concat 把俩个字符串连接在一起(类似之前的||的作用)
+		  例如:把'hello'和'world'俩个字符串连接到一起,并且起个别名为msg
+		  select concat('hello','world') msg
+          from dual;
+		  
+		  例如:把first_name和last_name俩个列的值连接到一起
+		  select concat(first_name,last_name) as name
+          from s_emp;
+
+	  
+	  substr 截取字符串
+		  例如:截取'hello'字符串,从第2个字符开始(包含第二个字符),截取后面连续的3个字符
+		  select substr('hello',2,3)
+		  from dual;
+
+
+	  length 获得字符串长度
+		  例如:获得'world'字符串的长度
+		  select length('world')
+		  from dual;
+
+		  例如:获得s_emp表中last_name列的每个值的字符长度
+		  select length(last_name)
+		  from s_emp;
+
+	  nvl 替换列中为null的值
+		  在前面的章节已经使用过了
+
+
+
+
+	数字函数
+	  ROUND		Rounds value to specified decimal
+	  TRUNC		Truncates value to specified decimal
+	  MOD		Returns remainder of division   
+
+
+	  round 四舍五入
+		  round(arg1,arg2)
+		  第一个参数表示要进行四舍五入操作的数字
+		  第二个参数表示保留到哪一位
+
+		  例如:
+		  保留到小数点后面2位
+		  select round(45.923,2)
+		  from dual;
+
+		  保留到个位 (个十百千万...)
+		  select round(45.923,0)
+		  from dual;
+
+		  保留到十位 (个十百千万...)
+		  select round(45.923,-1)
+		  from dual;
+
+
+	  trunc 截取到某一位 
+		  trunc(arg1,arg2)
+		  和round的用法一样,但是trunc只舍去不进位
+
+		  例如:
+		  截取到小数点后面2位
+		  select trunc(45.929,2)
+		  from dual;
+
+		  截取到个位 (个十百千万...)
+		  select trunc(45.923,0)
+		  from dual;
+
+		  截取到十位 (个十百千万...)
+		  select trunc(45.923,-1)
+		  from dual;			
+
+
+	  mod 取余
+		  mod(arg1,arg2)	
+		  第一个参数表示要进行取余操作的数字
+		  第二个参数表示参数1和谁取余
+		  
+		  例如:
+		  把10和3进行取余 (10除以3然后获取余数)
+		  select mod(10,3)
+		  from dual;
+
+
+
+	日期函数
+      MONTHS_BETWEEN   Number of months between two dates
+      ADD_MONTHS	   Add calendar months to date
+	  NEXT_DAY		   Next day of the date specified
+	  LAST_DAY	       Last day of the month
+	  ROUND	           Round to date at midnight
+	  TRUNC	           Remove time portion  from date
+
+
+   	  sysdate关键字
+		表示系统的当前时间	
+		例如:
+		显示时间:当前时间
+		select sysdate from dual;
+
+		注意:sysdate进行加减操作的时候,单位是天
+		例如:
+		显示时间:明天的这个时候
+		select sysdate+1 from dual;
+
+		例如:
+		显示时间:昨天的这个时候
+		select sysdate-1 from dual;
+		
+		例如:
+		显示时间:1小时之后的这个日期
+		select sysdate+1/24 from dual;
+
+		
+	  months_between 俩个日期之间相差多少个月(单位是月)
+		例如:
+		30天之后和现在相差多少个月
+		select months_between(sysdate+30,sysdate)
+		from dual;
+
+
+	  add_months  返回一个日期数据:表示一个时间点,往后推x月的日期
+		例如:
+		'01-2月-2016'往后推2个月
+		select add_months('01-2月-2016',2)
+		from dual;	
+		
+		例如:
+		当前时间往后推4个月
+		select add_months(sysdate,4)
+	    from dual;
+
+		注意:这个数字也可以是负数,表示往前推x月
+
+	  next_day 返回一个日期数据:表示一个时间点后的下一个星期几在哪一天
+		例如:
+		离当前时间最近的下一个星期5是哪一个天
+		select next_day(sysdate,'星期五')
+		from dual;
+		注意:
+		如果要使用'FRIDAY',那么需要把当前会话的语言环境修改为英文
+
+
+	  last_day 返回一个日期数据:表示一个日期所在月份的最后一天
+		例如:
+		当前日期所在月份的最后一天(月底)
+		select last_day(sysdate)
+		from dual;
+
+
+	  round  对日期进四舍五入,返回操作后的日期数据
+		例如:
+		把当前日期四舍五入到月
+		select round(sysdate,'MONTH')
+		from dual;
+		测试:15号16号分别是舍弃还是进位
+		15舍16升
+		把当前日期四舍五入到年
+		select round(sysdate,'YEAR')
+		from dual;
+		6舍7升
+
+	  trunc  对日期进行截取 和round类似,但是只舍弃不进位
+
+
+
+
+	类型转换函数
+	  TO_CHAR converts a number or date string to a character string.
+	  TO_NUMBER converts a character string containing digits to a number.
+    TO_DATE converts a character string of a date to a date value. 
+	  
+
+	  to_char 把日期转换为字符
+
+	    例如:
+		把当前日期按照指定格式转换为字符串
+		select to_char(sysdate,'yyyy')
+		from dual;
+		
+		  日期格式：
+		  yyyy：四位数的年份
+		  rrrr：四位数的年份
+		  yy：两位数的年份
+		  rr：两位数的年份
+		  mm：两位数的月份（数字）
+		  D：一周的星期几
+		  DD：一月的第几天
+		  DDD ：一年的第几天
+		  YEAR：英文的年份
+		  MONTH：英文全称的月份
+		  mon：英文简写的月份
+		  ddsp：英文的第几天(一个月的)
+		  ddspth：英文序列数的第几天(一个月的)
+		  DAY：全英文的星期
+		  DY：简写的英文星期
+		  hh：小时
+		  mi：分钟
+		  ss：秒
+
+		例如:
+		测试常见的一些日期数据转换为字符串的格式
+		select to_char(sysdate,'yyyy MM D DD DDD YEAR MONTH ddsp ddspth DAY DY') from dual;
+
+		select to_char(sysdate,'dd-mm-yy')
+		from dual;
+
+		select to_char(sysdate,'dd-mm-yy HH24:MI:SS AM')
+		from dual;
+
+
+	  千年虫:
+		在早期的计算机的程序中规定了的年份仅用两位数来表示。也就是说，假如是1971年，在计算机里就会被表示为71，但是到了2000年的时候这个情况就出现了问题，计算机就会将其年份表示为00。这样的话计算机内部对年份的计算就会出现问题。这个事情当时被称为千年虫
+	
+		数据库中表示日期中年份的有俩种: yy和rr
+		之前一直使用的时候yy格式,后来才有的rr格式
+		yy表示使用一个俩位数表示当前年份:
+		1990 ---yy数据库格式---> 90
+		1968 ---yy数据库格式---> 68
+		1979 ---yy数据库格式---> 79
+		
+		rr格式表示: 另外参照图片:rr日期格式规则.png
+		如果日期中的年份采用的格式为rr，并且只提供了最后2位年份，那么年份中的前两位数字就由两部分共同确定：提供年份的两位数字(指定年)，数据库服务器上当前日期中年份的后2位数字(当年)。确定指定年所在世纪的规则如下：
+		规则1 如果指定年在00~49之间，并且当前年份在00~49之间，那么指定年的世纪就与当前年份的世纪相同。因此，指定年的前两位数字就等于当前年份的前两位数字。例如，如果指定年为15，而当前年份为2007，那么指定年就是2015。
+		规则2 如果指定年在50~99之间，并且当前年份在00~49之间，那么指定年的世纪就等于当前年份的世纪减去1。因此，指定年的前两位数字等于当前年份的前两位数字减去1。例如，如果指定年为75，而当前年份为2007，那么指定年就是1975。
+		规则3 如果指定年在00~49之间，并且当前年份在50~99之间，那么指定年的世纪就等于当前年份的世纪加上1。因此，指定年的前两位数字等于当前年份的前两位数字加上1。例如，如果指定年为15，而当前年份为2075，那么指定年就是2115。
+		规则4 如果指定年在50~99之间，并且当前年份在50~99之间，那么指定年的世纪就与当前年份的世纪相同。因此，指定年的前两位数字就等于当前年份的前两位数字。例如，如果指定年为55，而当前年份为2075，那么指定年就是2055。
+
+		注意:rr格式并没有完全的解决俩位数年份保存的问题,思考里面还有哪些问题存在。
+
+
+
+	  to_char 把数字转换为字符
+		例如:
+	    select to_char(salary,'$999,999.00') 
+		from s_emp;
+
+		fm表示去除结果显示中的开始的空格
+		select to_char(salary,'fm$999,999.00') 
+		from s_emp;
+
+		L表示系统本地的货币符号
+		select to_char(salary,'fmL999,999.00') 
+		from s_emp;
+		
+
+
+	  to_number 把字符转换为数字
+		例如:
+		select to_number('1000') 
+		from dual;
+		
+		//这个写法是错的 abc不能转换为数字
+		select to_number('abc')
+		from dual;
+
+		
+
+	  to_date 把字符转换为日期
+		例如:
+		select to_date('10-12-2016','dd-mm-yyyy')
+		from dual;
+
+		select to_date('25-5月-95','dd-month-yy')
+		from dual;
+
+		select to_date('95/5月/25','yy/month/dd')
+		from dual;
+
+		//session语言环境设置为英文下面可以运行
+		select to_date('25-MAY-95','dd-MONTH-yy')
+		from dual;
+
+		
+
+	oracle数据库中表示一个日期数据的几种方式
+	  1.使用sysdate
+	  2.使用oracle默认的日期格式 例如:'25-MAY-95'
+	  3.使用日期函数ADD_MONTHS/NEXT_DAY/LAST_DAY/ROUND/TRUNC
+	  4.使用转换函数to_date
+
+
+	函数之间的嵌套
+	  格式:F3(F2(F1(arg0,arg1),arg2),arg3)
+	  例如:
+	  先把'hello'和'world'连接起来,再转换为字母大写然后再从第4个字符开始,连着截取4个字符
+	  select substr(upper(concat('hello','world')),4,4)
+	  from dual;
+
+
+
+第四章：多表查询
+
+	多表查询，又称表联合查询，即一条语句涉及到的表有多张，数据通过特定的连接进行联合显示.
+
+
+	笛卡尔积
+		在数学中，两个集合X和Y的笛卡尓积（Cartesian product），又称直积，表示为X × Y.
+		假设集合A={a, b}，集合B={0, 1, 2}，则两个集合的笛卡尔积为{(a, 0), (a, 1), (a, 2), (b, 0), (b, 1), (b, 2)}。
+		在数据库中,如果直接查询俩张表,那么其查询结果就会产生笛卡尔积
+		例如:
+		select *
+		from s_emp,s_dept;
+		
+	
+	连接查询
+		为了在多表查询中避免笛卡尔积的产生,我们可以使用连接查询来解决这个问题.
+		连接查询分为:
+			1.等值连接
+			2.不等值连接
+			3.外连接
+				左外连接
+				右外连接
+				全连接
+			4.自连接
+	
+	等值连接
+		利用一张表中某列的值和另一张表中某列的值相等的关系,把俩张表连接起来。
+		例如:查询员工的名字、部门编号、部门名字
+		select last_name,dept_id,name
+		from s_emp,s_dept
+		where s_emp.dept_id=s_dept.id;
+
+		为了表述的更加清楚,可以给每张表起别名
+		select se.last_name,se.dept_id,sd.name 
+		from s_emp se,s_dept sd
+		where se.dept_id=sd.id;
+
+
+	不等值连接
+		假设数据库中还有一张工资等级表:salgrade
+		工资等级表salgrade:
+			gradeName列表示等级名称
+			losal	 列表示这个级别的最低工资数
+			hisal    列表示这个级别的最高工资数
+
+		表中的数据类似于下面内容:
+		id  salgrade	losal hisal
+		1  初级程序员   2000  4000
+		2  中级程序员   4000  6000
+		
+
+		例如:
+		查询出员工的名字、职位、工资、工资等级名称
+		SELECT  e.last_name, e.title, e.salray, s.gradeName
+		FROM    s_emp e, salgrade s
+		WHERE   e.salray BETWEEN s.losal AND s.hisal
+
+
+	外连接
+		外连接分为:左外连接 右外连接 全连接
+		先分别在俩s_emp和s_dept表中插入新的数据
+		特点:新员工tom不在任何部门,新增部门st下面没有任何员工
+		insert into s_emp(id,last_name) values(26,'tom');
+		insert into s_dept(id,name) values(60,'st');
+		commit;
+
+		下面条sql语句可以把上面插入的数据给删除掉
+		delete from s_emp where id=26;
+		delete from s_dept where id=60;
+		commit;
+		
+		这个时候再使用等值连接的话,查询出来的数据就会少,因为新增的员工tom和部门表中的数据连接不上,当然新增的部门st也和员工表中的数据连接不上.那么这俩条数据都是在等值连接中查询不出来.
+
+
+	左外连接
+		例如:
+		查询所有员工 以及对应的部门的名字,没有部门的员工也要显示出来
+		select last_name,dept_id,name 
+		from s_emp,s_dept
+		where s_emp.dept_id=s_dept.id(+);
+		
+		或者 俩者是等价的
+
+		select last_name,dept_id,name 
+		from s_emp left outer join s_dept
+		on s_emp.dept_id=s_dept.id;
+		
+		注意:outer可以省去不写
+
+	
+	右外连接
+		例如:
+		查询所有员工 以及对应的部门的名字,没有任何员工的部门也要显示出来
+		select last_name,dept_id,name 
+		from s_emp,s_dept
+		where s_emp.dept_id(+)=s_dept.id;
+
+		select last_name,dept_id,name 
+		from s_emp right outer join s_dept
+		on s_emp.dept_id=s_dept.id;
+
+		注意:outer可以省去不写
+
+	
+	全连接
+		例如:
+		查询所有员工 以及对应的部门的名字,没有任何员工的部门也要显示出来,没有部门的员工也要显示出来
+		select last_name,dept_id,name 
+		from s_emp full outer join s_dept 
+		on s_emp.dept_id=s_dept.id;
+
+		注意:outer可以省去不写
+
+	
+	自连接
+		一张表,自己和自己连接
+		例如:
+		查询每个员工的名字以及员工对应的管理者的名字
+		select s1.last_name,s2.last_name manager_name
+		from s_emp s1,s_emp s2
+		where s1.manager_id = s2.id;
+
+
+
+	对查询结果集的操作
+		如果有俩条sql语句,每一条sql都可以查询出一个结果,这个被称之为结果集。那么我们可以使用下面的关键字对俩个结果集进行操作
+		union		取俩个结果集的并集 
+		union all	把俩个结果集合在一起显示出来	
+		minus    	第一个结果集除去第二个结果集和它相同的部分
+		intersect	求俩个结果集的交集
+
+		注意:前提条件 俩个结果集中查询的列要完全一致
+
+	union  取俩个结果集的并集 
+		例如:
+		select last_name,dept_id,name 
+		from s_emp,s_dept
+		where s_emp.dept_id=s_dept.id(+)
+		union
+		select last_name,dept_id,name 
+		from s_emp,s_dept
+		where s_emp.dept_id(+)=s_dept.id;
+
+	union all  把俩个结果集合在一起显示出来	
+		例如:
+		select last_name,dept_id,name 
+		from s_emp,s_dept
+		where s_emp.dept_id=s_dept.id(+)
+		union all
+		select last_name,dept_id,name 
+		from s_emp,s_dept
+		where s_emp.dept_id(+)=s_dept.id;
+
+	minus  第一个结果集除去第二个结果集和它相同的部分
+		例如:
+		select last_name,dept_id,name 
+		from s_emp,s_dept
+		where s_emp.dept_id=s_dept.id(+)
+		minus
+		select last_name,dept_id,name 
+		from s_emp,s_dept
+		where s_emp.dept_id(+)=s_dept.id;
+		
+		对比俩种情况的结果
+
+		select last_name,dept_id,name 
+		from s_emp,s_dept
+		where s_emp.dept_id(+)=s_dept.id
+		minus
+		select last_name,dept_id,name 
+		from s_emp,s_dept
+		where s_emp.dept_id=s_dept.id(+);
+
+
+
+	intersect  求俩个结果集的交集
+		select last_name,dept_id,name 
+		from s_emp,s_dept
+		where s_emp.dept_id=s_dept.id(+)
+		intersect
+		select last_name,dept_id,name 
+		from s_emp,s_dept
+		where s_emp.dept_id(+)=s_dept.id;
+
+	
+
+	oracle中的伪列 rownum
+		伪列rownum，就像表中的列一样，但是在表中并不存储。伪列只能查询，不能进行增删改操作。它会根据返回的结果为每一条数据生成一个序列化的数字.rownum是oracle才有的伪列
+
+		rownum 所能作的操作:
+		
+		rownum 只能等于1  如果让其等于其他数 则查不到数据
+		例如:
+		select last_name
+		from s_emp
+		where rownum=1
+
+		rownum 大于0      如果让其大于其他数 则查不到数据
+		例如:
+		select last_name
+		from s_emp
+		where rownum>0
+		
+		rownum 可以小于任何数
+		例如:
+		select last_name
+		from s_emp
+		where rownum<7
+
+
