@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
  * 机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。
  * 问总共有多少条不同的路径？
  */
-public class LeetCode62不同路径 {
+public class LeetCode62不同路径数量 {
 
     ///////////////方法问题，数字过大使用int还是double都会超出数字的索引
     public static int num(int i) {

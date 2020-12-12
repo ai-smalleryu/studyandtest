@@ -21,7 +21,7 @@ package ALeetCode题选;
  * 第 5 位顾客那里，我们找还一张 10 美元的钞票和一张 5 美元的钞票。
  * 由于所有客户都得到了正确的找零，所以我们输出 true。
  */
-public class LeetCode860柠檬买水 {
+public class LeetCode860柠檬买水最优 {
     public static boolean lemonadeChange(int[] bills) {
         //统计店员所拥有的5元和10元的数量（20元的不需要统计，
         //因为顾客只能使用5元，10元和20元，而20元是没法

@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @USER: Administrator
  * @DATE: 2020/12/11 18:44
  */
-public class LeetCode001两数之和 {
+public class LeetCode001两数和计算 {
     public static int[] twoSum(int[] nums, int target) {
         Map map = new HashMap<Integer, Integer>();
 

@@ -8,7 +8,7 @@ package ALeetCode题选;
  * 输入: 123
  * 输出: 321
  */
-public class LeetCode007整数反转 {
+public class LeetCode007int整数反转 {
     public static int reverse(int x) {
         char[] chars = String.valueOf(x).toCharArray();
         int m = chars.length;
