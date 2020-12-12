@@ -1,9 +1,7 @@
 package workTestMianshi;
 
 
-import java.io.PrintStream;
 import java.util.HashSet;
-import java.util.Scanner;
 import java.util.Set;
 
 import static java.lang.Math.*;
@@ -32,7 +30,9 @@ public class TestString {
         Set<Character> set = new HashSet<>();
         for (int i = start; i < end; i++) {
             Character ch = s.charAt(i);
-            if (set.contains(ch)) return false;
+            if (set.contains(ch)) {
+                return false;
+            }
             set.add(ch);
         }
         return true;
