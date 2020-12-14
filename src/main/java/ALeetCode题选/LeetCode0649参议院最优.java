@@ -32,7 +32,7 @@ import java.util.Queue;
  * 第三个来自 Dire 阵营的参议员可以使用他的第一项权利禁止第一个参议员的权利
  * 因此在第二轮只剩下第三个参议员拥有投票的权利,于是他可以宣布胜利
  */
-public class LeetCode649参议院最优 {
+public class LeetCode0649参议院最优 {
 
     public static String predictPartyVictory(String senate) {
         //字符串长度
