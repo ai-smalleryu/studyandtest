@@ -51,3 +51,16 @@ public class TwoFind {
     }
 }
 
+class T{
+    public static void main(String[] args) {
+        String s="ada:ads.ds:sda";
+        String[] split = s.split(":");
+        int indexOf = split[1].indexOf(".");
+        System.out.println(indexOf);
+        String substring = split[1].substring(0, 3);
+        System.out.println(substring);
+        System.out.println(Arrays.toString(split));
+        String substring1 = split[1].substring(0, split[1].indexOf("."));
+        System.out.println(substring1);
+    }
+}
