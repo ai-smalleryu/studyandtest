@@ -1,11 +1,10 @@
 package FinallyStudying.facestudy01;
 
-import java.util.ArrayList;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
 /**
- * 循环阻塞
+ * 循环阻塞  循环屏障
  */
 public class CyclicBarrierStudy {
     public static void main(String[] args) {
@@ -17,7 +16,7 @@ public class CyclicBarrierStudy {
         for (int i = 0; i < 6; i++) {
             int m = i;
             new Thread(() -> {
-                System.out.println(Thread.currentThread().getName() + "数据信息\t" + m + "");
+                System.out.println(Thread.currentThread().getName() + "数据信息\t" + m + "++");
                 try {
                     //先行到达的线程进行等待
                     cyclicBarrier.await();

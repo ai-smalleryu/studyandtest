@@ -1,9 +1,6 @@
 package ALeetCode题选;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -47,6 +44,19 @@ public class LeetCode0001两数和计算 {
         return new int[2];
     }
 
+    public static int[] twoSum2(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            int desired = target - nums[i];
+            Integer orDefault = map.getOrDefault(desired, -1);
+            if (orDefault==-1){
+                map.put(nums[i],i);
+            }else {
+                return new int[]{orDefault,i};
+            }
+        }
+        return new int[2];
+    }
     public static int[] twoSum3(int[] nums, int target) {
         for (int i = 0; i < nums.length; i++) {
             int desired = target - nums[i];
@@ -67,7 +77,7 @@ public class LeetCode0001两数和计算 {
         int[] nums2= new int[]{3,2,4};
         int target = 9;
 //        int[] ints = twoSum(nums, target);
-        int[] ints = twoSum1(nums2, 6);
+        int[] ints = twoSum2(nums, 18);
         System.out.println(ints[0]+"-----"+ints[1]);
     }
 }

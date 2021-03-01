@@ -39,17 +39,18 @@ public final class SemaphoreStudy {
 class SemaphoreStudy2 {
     public static void main(String[] args) {
         //信号量
-        Semaphore semaphore = new Semaphore(1);//模拟停车位
-        for (int i = 0; ; i++) {//相当于9辆车去抢夺车位
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        Semaphore semaphore = new Semaphore(3);//模拟停车位
+        for (int i = 0; i < 15; i++) {//相当于9辆车去抢夺车位
+
             new Thread(() -> {
                 try {
                     semaphore.acquire();//获得模拟位置并进行阻塞
                     System.out.println(Thread.currentThread().getName() + "\t车获得车位");
+                    try {
+                        TimeUnit.SECONDS.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     System.out.println(Thread.currentThread().getName() + "\t车离开位置");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -115,11 +116,12 @@ class Link<T> {
         }
     }
 }
-class A{
 
-    public static int[] randFun(int[] array){
-        for (int i = 0;i<array.length;i++){
-            int index = (int)(Math.random() * (array.length - 1)); //随机下标交换
+class A {
+
+    public static int[] randFun(int[] array) {
+        for (int i = 0; i < array.length; i++) {
+            int index = (int) (Math.random() * (array.length - 1)); //随机下标交换
             int temp = array[i];
             array[i] = array[index];
             array[index] = temp;
@@ -128,7 +130,7 @@ class A{
     }
 
     public static void main(String[] args) {
-        int[] array = {1,2,3,4,5,6};
+        int[] array = {1, 2, 3, 4, 5, 6};
         int[] ints = randFun(array);
         for (int anInt : ints) {
             System.out.println(anInt);
@@ -137,10 +139,7 @@ class A{
 }
 
 
-
-
-
- class Demo {
+class Demo {
 
     // 记录背包的总容量
     public int packageweight;
@@ -156,7 +155,7 @@ class A{
         // 初始化demo实例
         Demo demo = new Demo();
 
-        while(true){
+        while (true) {
             // 读取测试文件中数据
             demo.readdata();
             // 初始化价值记录表
@@ -165,24 +164,24 @@ class A{
             System.out.println("********背包总容量********");
             System.out.println(demo.packageweight);
             System.out.println("********商品总数，及其各个商品重量与价值情况***********");
-            System.out.println("商品总数："+demo.productnum);
-            for(int i = 0; i < demo.weights.size(); i++){
-                System.out.print(demo.weights.get(i)+" ");
+            System.out.println("商品总数：" + demo.productnum);
+            for (int i = 0; i < demo.weights.size(); i++) {
+                System.out.print(demo.weights.get(i) + " ");
             }
             System.out.println();
-            for(int i = 0; i < demo.values.size(); i++){
-                System.out.print(demo.values.get(i)+" ");
+            for (int i = 0; i < demo.values.size(); i++) {
+                System.out.print(demo.values.get(i) + " ");
             }
             System.out.println();
 
             System.out.println("********商品价值记录表********");
             for (int i = 0; i < res.length; i++) {
                 for (int j = 0; j < res[i].length; j++) {
-                    System.out.print(res[i][j]+" ");
+                    System.out.print(res[i][j] + " ");
                 }
                 System.out.println();
             }
-            System.out.println("此时背包中最大价值总和为："+res[demo.productnum][demo.packageweight]);
+            System.out.println("此时背包中最大价值总和为：" + res[demo.productnum][demo.packageweight]);
 
             System.out.println("装入背包中商品序号为：");
             demo.findproducts(res);
@@ -192,9 +191,10 @@ class A{
 
     /**
      * 读取测试数据
+     *
      * @throws Exception
      */
-    public void readdata() throws Exception{
+    public void readdata() throws Exception {
         /*
          * 选择测试文件序号
          */
@@ -215,13 +215,13 @@ class A{
         this.productnum = Integer.parseInt(string.split(" ")[1]);
 
         String weight = br.readLine();
-        this.weights = new<Integer> ArrayList();
+        this.weights = new <Integer>ArrayList();
         for (int i = 0; i < this.productnum; i++) {
             this.weights.add(Integer.parseInt(weight.split(" ")[i]));
         }
 
         String value = br.readLine();
-        this.values = new<Integer> ArrayList();
+        this.values = new <Integer>ArrayList();
         for (int i = 0; i < this.productnum; i++) {
             this.values.add(Integer.parseInt(value.split(" ")[i]));
         }
@@ -232,13 +232,13 @@ class A{
      * m[i][0] = 0 :表示背包重量为0，不能装东西，因此价值全为0
      * m[0][j] = 0 :表示没有可以装的物品，因此价值为0
      */
-    public int[][] initpkdata(){
-        int[][] m = new int[this.productnum+1][this.packageweight+1];
+    public int[][] initpkdata() {
+        int[][] m = new int[this.productnum + 1][this.packageweight + 1];
 
-        for(int i = 0; i <= this.productnum; i++){
+        for (int i = 0; i <= this.productnum; i++) {
             m[i][0] = 0;
         }
-        for(int j = 0; j <= this.packageweight; j++){
+        for (int j = 0; j <= this.packageweight; j++) {
             m[0][j] = 0;
         }
 
@@ -247,28 +247,28 @@ class A{
 
     /**
      * 计算背包问题
+     *
      * @return 修改相应价值记录后的表
      */
-    public int[][] result(int[][] arr){
+    public int[][] result(int[][] arr) {
 
-        for(int i = 1; i <= this.productnum; i++){
-            for(int j = 1; j <= this.packageweight; j++){
+        for (int i = 1; i <= this.productnum; i++) {
+            for (int j = 1; j <= this.packageweight; j++) {
 
                 // 当第i件物品重量大于当前包的容量 则放不进去
                 // 所以当前背包所含价值等于前i-1件商品的价值
-                if(this.weights.get(i-1) > j){
-                    arr[i][j] = arr[i-1][j];
+                if (this.weights.get(i - 1) > j) {
+                    arr[i][j] = arr[i - 1][j];
                 }
                 // 当第i件商品能放进去时
                 // 1 放入商品，价值为：arr[i-1][j-(int)this.weights.get(i-1)] + (int)this.values.get(i-1)
                 // 2不放入商品，价值为前i-1件上篇价值和：arr[i][j] = arr[i-1][j];
                 // 此时最大价值为上述两种方案中最大的一个
-                else{
-                    if(arr[i-1][j] < arr[i-1][j-this.weights.get(i-1)] + this.values.get(i-1)){
-                        arr[i][j] = arr[i-1][j-this.weights.get(i-1)] + this.values.get(i-1);
-                    }
-                    else{
-                        arr[i][j] = arr[i-1][j];
+                else {
+                    if (arr[i - 1][j] < arr[i - 1][j - this.weights.get(i - 1)] + this.values.get(i - 1)) {
+                        arr[i][j] = arr[i - 1][j - this.weights.get(i - 1)] + this.values.get(i - 1);
+                    } else {
+                        arr[i][j] = arr[i - 1][j];
                     }
                 }
             }
@@ -280,13 +280,13 @@ class A{
     /**
      * 查找那些商品放在背包中
      */
-    public void findproducts(int[][] arr){
+    public void findproducts(int[][] arr) {
         int j = this.packageweight;
-        for(int i = this.productnum; i > 0; i--){
-            if(arr[i][j] > arr[i-1][j]){
-                System.out.print(i+"  ");//输出选中的物品的编号
-                j = j - this.weights.get(i-1);
-                if(j < 0){
+        for (int i = this.productnum; i > 0; i--) {
+            if (arr[i][j] > arr[i - 1][j]) {
+                System.out.print(i + "  ");//输出选中的物品的编号
+                j = j - this.weights.get(i - 1);
+                if (j < 0) {
                     break;
                 }
             }

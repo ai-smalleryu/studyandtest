@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 public class FoureThread {
     public static void main(String[] args) {
         //threadPoolExecutor();
-        threadPool();
+        // threadPool();
     }
 
     private static void threadPoolExecutor() {
@@ -107,5 +107,24 @@ public class FoureThread {
         } finally {
             fixedThreadPool.shutdown();//关闭线程池
         }
+    }
+
+
+    public static void testScheduled() {
+        ScheduledExecutorService service = Executors.newScheduledThreadPool(5);
+        // 1. 延迟一定时间执行一次
+        service.schedule(() -> {
+            System.out.println("schedule ==> 云栖简码-i-code.online");
+        }, 2, TimeUnit.SECONDS);
+
+        // 2. 按照固定频率周期执行
+        service.scheduleAtFixedRate(() -> {
+            System.out.println("scheduleAtFixedRate ==> 云栖简码-i-code.online");
+        }, 2, 3, TimeUnit.SECONDS);
+
+        //3. 按照固定频率周期执行
+        service.scheduleWithFixedDelay(() -> {
+            System.out.println("scheduleWithFixedDelay ==> 云栖简码-i-code.online");
+        }, 2, 5, TimeUnit.SECONDS);
     }
 }

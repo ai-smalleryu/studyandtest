@@ -1,6 +1,5 @@
 package FinallyStudying.facestudy01;
 
-import sun.applet.Main;
 
 import java.util.concurrent.TimeUnit;
 
