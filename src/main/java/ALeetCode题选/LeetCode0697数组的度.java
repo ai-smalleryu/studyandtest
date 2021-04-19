@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * nums.length 在1到 50,000 区间范围内。
  * nums[i] 是一个在 0 到 49,999 范围内的整数。
  */
-public class LeetCode697数组的度 {
+public class LeetCode0697数组的度 {
     public static void main(String[] args) {
         int[] a = {1, 2, 2, 3, 1};
         findShortestSubArray(a);

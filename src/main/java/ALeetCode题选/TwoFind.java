@@ -1,6 +1,8 @@
 package ALeetCode题选;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Author: Administrator
@@ -50,17 +52,20 @@ public class TwoFind {
         }
     }
 }
-
 class T{
     public static void main(String[] args) {
-        String s="ada:ads.ds:sda";
-        String[] split = s.split(":");
-        int indexOf = split[1].indexOf(".");
-        System.out.println(indexOf);
-        String substring = split[1].substring(0, 3);
-        System.out.println(substring);
-        System.out.println(Arrays.toString(split));
-        String substring1 = split[1].substring(0, split[1].indexOf("."));
-        System.out.println(substring1);
-    }
+        Map<String,Object> tt= new HashMap<String,Object>();
+        int a = 187117;
+        tt.put("aa",a);
+        try {
+            Object a2=tt.get("aa");
+            System.out.println(a2);
+            String s=(String)a2;
+            long b = (long) tt.get("aa");
+//            long b = Long.valueOf(String.valueOf(tt.get("aa"))).longValue();
+            System.out.println(b);
+        }catch (Exception e ) {
+            e.printStackTrace();
+        }
+        }
 }
