@@ -1,7 +1,5 @@
 package FinallyStudying.facestudy01;
 
-import scala.collection.mutable.HashTable;
-
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;

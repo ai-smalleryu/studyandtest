@@ -14,7 +14,7 @@ public class JdbcDay1 {
         //数据库信息包括url name password
         String url="jdbc:mysql://localhost:3306/stu";//数据库连接最后是需要进入的库
         String name="root";//密码
-        String password="root";
+        String password="root@1q2w3e";
         ResultSet resultSet;
         Statement statement;
         try{
@@ -22,7 +22,7 @@ public class JdbcDay1 {
             Class.forName(driver);
             con = DriverManager.getConnection(url, name, password);
             statement = con.createStatement();
-            String sql="select * from student1";
+            String sql="select * from student";
             resultSet = statement.executeQuery(sql);
             Student1 student1=null;
             while (resultSet.next())
@@ -30,7 +30,6 @@ public class JdbcDay1 {
               student1=new Student1();;
                 student1.setId(resultSet.getInt("id"));
                 student1.setName(resultSet.getString("name"));
-                student1.setPassword(resultSet.getString("password"));
                 student1.setAge(resultSet.getInt("age"));
                 student1s.add(student1);
                // System.out.println(resultSet.getInt("id")+"=="+resultSet.getString("name")+resultSet.getString("password")+resultSet.getInt("age"));

@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.Vector;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
