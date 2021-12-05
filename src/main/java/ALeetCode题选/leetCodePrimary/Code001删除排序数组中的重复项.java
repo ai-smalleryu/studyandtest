@@ -11,7 +11,7 @@ import java.util.HashMap;
 public class Code001删除排序数组中的重复项 {
     public static void main(String[] args) {
         int[] ints = {1, 1, 2, 3, 3, 5, 6, 6};
-        System.out.println(removeDuplicates(ints));
+        System.out.println(removeDuplicates2(ints));
     }
 
     public static int removeDuplicates(int[] nums) {
@@ -26,5 +26,18 @@ public class Code001删除排序数组中的重复项 {
             }
         }
         return nums.length-cout;
+    }
+
+    public static int removeDuplicates2(int[] nums) {
+        int i = 0;
+
+        for (int j = 1; j < nums.length; j++) {
+            if (nums[i] != nums[j]) {
+                i++;
+                nums[i] = nums[j];
+            }
+        }
+
+        return i + 1;
     }
 }
