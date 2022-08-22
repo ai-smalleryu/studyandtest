@@ -1,6 +1,5 @@
 package ALeetCode题选.algorithmproblems.binarysearch;
 
-import com.sun.xml.internal.fastinfoset.tools.XML_SAX_StAX_FI;
 
 /**
  * Copyright (c) 2020-2030 尚硅谷 All Rights Reserved
@@ -31,12 +30,13 @@ public class SearchMatrix {
             int midIndex = (left + right) / 2;
             int midElement = matrix[midIndex/n][midIndex%n];
 
-            if (midElement < target)
+            if (midElement < target) {
                 left = midIndex + 1;
-            else if(midElement > target)
+            } else if(midElement > target) {
                 right = midIndex - 1;
-            else
+            } else {
                 return true;
+            }
         }
 
         return false;

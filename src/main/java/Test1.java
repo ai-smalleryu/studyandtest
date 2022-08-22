@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -58,5 +60,24 @@ public class Test1 {
             System.out.println("--------------false-------------------");
         }
 
+    }
+}
+
+class T{
+    static Object t1(){
+        List<String> strings = new ArrayList<>();
+        strings.add("as");
+        strings.add("ass");
+        return strings;
+    }
+    public static void main(String[] args) {
+        Object o = t1();
+        boolean b = o instanceof List;
+        if (b){
+          List<String>  list= (List<String >)o;
+            for (String s : list) {
+                System.out.println(s);
+            }
+        }
     }
 }

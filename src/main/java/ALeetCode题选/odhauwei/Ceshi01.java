@@ -13,14 +13,8 @@ import java.util.*;
 public class Ceshi01 {
     public static void main(String[] args) {
 
-
-
-
-        String s = "qwer";
-        String substring = s.substring(0, 2);
-        System.out.println(substring);
-        int[] a = {10,9};
-        System.out.println(t2(a));
+        char a = 'a';
+        System.out.println(a ^ a);
     }
 
     public static void t1(String s) {
@@ -85,7 +79,7 @@ public class Ceshi01 {
         if (nums.length == 1) {
             return String.valueOf(nums[0]);
         }
-        if(nums.length<1){
+        if (nums.length < 1) {
             return "";
         }
         HashMap<Integer, String> integerListHashMap = new HashMap<>();

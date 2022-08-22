@@ -1,5 +1,8 @@
 package StuTes;
 
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+
 public class Student {
     private int id;
     private String name;
@@ -38,5 +41,11 @@ public class Student {
     public  Student()
     {
         System.out.println("无参构造器");
+    }
+
+    public static void main(String[] args) {
+        String html = "{Something must have been changed since you leave}";
+        boolean mus = html.contains("mus");
+        System.out.println(mus);
     }
 }

@@ -21,11 +21,7 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
         </dependency>
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <version>3.5.4</version>
-        </dependency>
+
         <!--JMH 测试性能-->
         <!--        <dependency>
                     <groupId>org.openjdk.jmh</groupId>
@@ -128,6 +124,12 @@
             <groupId>org.apache.htrace</groupId>
             <artifactId>htrace-core</artifactId>
             <version>3.1.0-incubating</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>31.1-jre</version>
         </dependency>
     </dependencies>
     <build>
